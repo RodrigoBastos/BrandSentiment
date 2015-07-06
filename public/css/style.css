@@ -1,6 +1,10 @@
 
-
-
 .test {
     background-color: #0000CD;
+}
+
+.md-toolbar-tools h1 {
+    font-size: inherit;
+    font-weight: inherit;
+    margin: inherit;
 }
