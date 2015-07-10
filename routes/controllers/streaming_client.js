@@ -6,7 +6,7 @@
 var Twit = require('twit');
 var oauth = require('../config/twitter_credentials.js');
 
-var keywords = ['twitter'];
+var keywords = ['feliz'];
 
 var client = new Twit(oauth);
 
@@ -21,7 +21,7 @@ stream.on('tweet', onTwitter);
 function onTwitter (tweet) {
   //console.log(tweet.text);
   tweets.push(tweet.text);
-  if (count == 10){
+  if (count == 50){
     stream.stop();
     onDone();
   }
