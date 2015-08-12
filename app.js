@@ -6,7 +6,7 @@ var path      = require('path');
 var express   = require('express');
 
 var app = express();
-var routes = require('./routes/config/main');
+var routes = require('./server/routes/main');
 
 app.set('port', 3000);
 app.set('view engine', 'jade');

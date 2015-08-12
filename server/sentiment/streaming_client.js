@@ -4,9 +4,9 @@
 "use strict";
 
 var Twit = require('twit');
-var oauth = require('../config/twitter_credentials.js');
+var oauth = require('../utils/twitter_credentials.js');
 
-var keywords = ['feliz'];
+var keywords = ['coca-cola'];
 
 var client = new Twit(oauth);
 
@@ -21,7 +21,7 @@ stream.on('tweet', onTwitter);
 function onTwitter (tweet) {
   //console.log(tweet.text);
   tweets.push(tweet.text);
-  if (count == 50){
+  if (count == 5){
     stream.stop();
     onDone();
   }

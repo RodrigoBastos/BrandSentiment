@@ -3,7 +3,7 @@
  */
 
 var express = require('express');
-var mainCtrl = require('../controllers/mainCtrl');
+var mainCtrl = require('./controllers/mainCtrl');
 
 
 module.exports = new express.Router()
