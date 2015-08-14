@@ -13,7 +13,7 @@ function loads (){
   var positives = fs.readFileSync("public/files/positives.txt", "utf8").split('\n');
   var arrayNeg = [];
   var arrayPos = [];
-  for(var i = 0; i < 100;i++){
+  for(var i = 0; i < negatives.length;i++){
     var trigramsNegative = tokens.textToTrigram(negatives[i]);
 
     trigramsNegative.map(function(trigram){
@@ -23,7 +23,7 @@ function loads (){
     //classifier.addDocument(negatives[i], 'negative');
   }
 
-  for(i = 0; i < 100; i++){
+  for(i = 0; i < positives.length; i++){
 
     var trigramsPositive = tokens.textToTrigram(positives[i]);
 
@@ -42,25 +42,8 @@ function loads (){
   classifier.train();
 
   var trigram = tokens.textToTrigram("Conquistamos uma boa vitória");
-  console.log(classifier.classify(trigram));
+  console.log(classifier.classify("Eu odeio você"));
 
 }
 
 loads();
-
-
-
-
-
-//classifier.addDocument('Eu estou triste', 'negative');
-//classifier.addDocument('Eu vou morrer', 'negative');
-//classifier.addDocument('Eu não gosto disso', 'negative');
-//classifier.addDocument('Eu odeio biscoito', 'negative');
-//classifier.addDocument('Eu estou feliz', 'positive');
-//classifier.addDocument('Eu vou comer', 'positive');
-//classifier.addDocument('Eu gosto de sorvete', 'positive');
-//classifier.addDocument('Eu amo feijoada', 'positive');
-//
-//classifier.train();
-//
-//console.log(classifier.classify('Ele gosta disso'));
