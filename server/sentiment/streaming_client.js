@@ -17,7 +17,6 @@ var tweets = [];
 
 stream.on('tweet', onTwitter);
 
-
 function onTwitter (tweet) {
   //console.log(tweet.text);
   var size = tweet.text.split(' ').length;
