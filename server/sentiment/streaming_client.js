@@ -1,12 +1,12 @@
 /**
  * Created by rodrigo on 06/07/15.
  */
-"use strict";
 
+var fs = require('fs');
 var Twit = require('twit');
 var oauth = require('../utils/twitter_credentials.js');
 
-var keywords = ['coca-cola'];
+var keywords = ['triste', 'raiva', 'assustador'];
 
 var client = new Twit(oauth);
 
@@ -20,14 +20,24 @@ stream.on('tweet', onTwitter);
 
 function onTwitter (tweet) {
   //console.log(tweet.text);
-  tweets.push(tweet.text);
-  if (count == 5){
+  var size = tweet.text.split(' ').length;
+
+  if (size < 5){
+    tweets.push(tweet.text);
+    console.log(tweet.text);
+    count++;
+  }
+
+  if (count == 100) {
     stream.stop();
     onDone();
   }
-  count++;
+
 }
 
 function onDone () {
   console.log(tweets);
 }
+
+
+
