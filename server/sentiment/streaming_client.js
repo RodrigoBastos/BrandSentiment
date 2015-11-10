@@ -3,14 +3,14 @@
  */
 
 var fs = require('fs');
-var Twit = require('twit');
-var oauth = require('../utils/twitter_credentials.js');
+var twitterClient = require('../config/index.js').twitterClient;
 
-var keywords = ['triste', 'raiva', 'assustador'];
+var keywords = ['acidente', 'morte', 'magoado', 'assassinado',
+  'triste', 'solidão', 'espacamento', 'angustia', 'desespero',
+  'depresão'];
 
-var client = new Twit(oauth);
-
-var stream = client.stream('statuses/filter', { track: keywords });
+//var client
+var stream = twitterClient.stream('statuses/filter', { track: keywords });
 
 var count = 0;
 var tweets = [];
@@ -21,13 +21,12 @@ function onTwitter (tweet) {
   //console.log(tweet.text);
   var size = tweet.text.split(' ').length;
 
-  if (size < 5){
+  if (size < 6){
     tweets.push(tweet.text);
-    console.log(tweet.text);
     count++;
   }
 
-  if (count == 100) {
+  if (count == 10) {
     stream.stop();
     onDone();
   }
@@ -36,6 +35,12 @@ function onTwitter (tweet) {
 
 function onDone () {
   console.log(tweets);
+
+  var phrases = '\n'+ tweets.join('\n');
+
+  fs.appendFile('frases.txt', phrases, function(err) {
+    if (err) throw err;
+  });
 }
 
 
