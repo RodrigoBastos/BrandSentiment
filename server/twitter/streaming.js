@@ -7,7 +7,8 @@ var twitterClient = require('../config/index.js').twitterClient;
 
 var keywords = ['acidente', 'morte', 'magoado', 'assassinado',
   'triste', 'solidão', 'espacamento', 'angustia', 'desespero',
-  'depresão'];
+  'depresão', 'sofrimento', 'pesadelo', 'esfaqueado', 'roubado', 'ódio', 'estado grave',
+  'muita raiva', 'Eu quero morrer', 'chorando', 'morreu'];
 
 //var client
 var stream = twitterClient.stream('statuses/filter', { track: keywords });
@@ -18,7 +19,7 @@ var tweets = [];
 stream.on('tweet', onTwitter);
 
 function onTwitter (tweet) {
-  //console.log(tweet.text);
+  console.log(tweet.text);
   var size = tweet.text.split(' ').length;
 
   if (size < 6){
@@ -26,7 +27,7 @@ function onTwitter (tweet) {
     count++;
   }
 
-  if (count == 10) {
+  if (count == 50) {
     stream.stop();
     onDone();
   }
