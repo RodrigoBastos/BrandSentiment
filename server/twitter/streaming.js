@@ -5,12 +5,9 @@
 var fs = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
-var keywords = ['acidente', 'morte', 'magoado', 'assassinado',
-  'triste', 'solidão', 'espacamento', 'angustia', 'desespero',
-  'depresão', 'sofrimento', 'pesadelo', 'esfaqueado', 'roubado', 'ódio', 'estado grave',
-  'muita raiva', 'Eu quero morrer', 'chorando', 'morreu'];
+var keywords = ['paz', 'amor', 'felicidade', 'gosto muito', 'carinho', 'gentileza'];
 
-//var client
+
 var stream = twitterClient.stream('statuses/filter', { track: keywords });
 
 var count = 0;
@@ -39,7 +36,7 @@ function onDone () {
 
   var phrases = '\n'+ tweets.join('\n');
 
-  fs.appendFile('frases.txt', phrases, function(err) {
+  fs.appendFile('sentences.txt', phrases, function(err) {
     if (err) throw err;
   });
 }

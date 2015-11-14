@@ -5,10 +5,7 @@ var fs  = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
 
-var keywords = ['acidente', 'morte', 'magoado', 'assassinado',
-  'triste', 'solidão', 'espacamento', 'angustia', 'desespero',
-  'depresão', 'sofrimento', 'pesadelo', 'esfaqueado', 'roubado', 'ódio', 'estado grave',
-  'muita raiva', 'Eu quero morrer', 'chorando', 'morreu'];
+var keywords = ['morte em paris'];
 
 
 for(var i=0; i < keywords.length; i++){
@@ -28,7 +25,7 @@ function getSentences (error, tweets, response) {
 
   var phrases = '\n'+ sentences.join('\n');
 
-  fs.appendFile('frases.txt', phrases, function(err) {
+  fs.appendFile('sentences.txt', phrases, function(err) {
     if (err) throw err;
   });
 }

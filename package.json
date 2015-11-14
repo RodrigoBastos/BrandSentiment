@@ -10,7 +10,8 @@
     "express": "~4.13.0",
     "ngram": "0.0.3",
     "iconv": "~2.1.10",
-    "tokenizer": "~1.1.2"
+    "tokenizer": "~1.1.2",
+    "lodash": "~3.10.1"
   },
   "devDependencies": {
     "gulp": "^3.8.11",

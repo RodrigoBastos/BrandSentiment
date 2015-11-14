@@ -6,20 +6,20 @@ var natural   = require('natural');
 
 
 var tokens = require("./../ngram/tokenSentences");
-
+var sentence = "Eu estou feliz!";
 
 function loads (){
   //Create classifier
   var classifier = new natural.BayesClassifier();
 
   //Read Files Neagtive and Positive
-  var negatives = fs.readFileSync("public/files/negatives.txt", 'utf8').split('\n');
-  var positives = fs.readFileSync("public/files/positives.txt", "utf8").split('\n');
+  var negatives = fs.readFileSync("sentences/negatives-sentences.txt", 'utf8').split('\n');
+  var positives = fs.readFileSync("sentences/positives-sentences.txt", "utf8").split('\n');
 
   var arrayNeg = [];
   var arrayPos = [];
 
-  //Push negative's cases in classifier
+  //Push negatives cases in classifier
   for(var i = 0; i < negatives.length;i++){
     var trigramsNegative = tokens.textToTrigram(negatives[i]);
 
@@ -29,7 +29,7 @@ function loads (){
     });
   }
 
-  //Push positve's cases in Classifier
+  //Push positves cases in Classifier
   for(i = 0; i < positives.length; i++){
 
     var trigramsPositive = tokens.textToTrigram(positives[i]);
@@ -44,13 +44,14 @@ function loads (){
   console.log(arrayNeg.length);
   console.log(arrayPos.length);
 
-  console.log(arrayPos);
+  //console.log(arrayPos);
 
   //Train
   classifier.train();
 
   //Test
-  console.log(classifier.classify("Ele está triste"));
+  console.log(classifier.classify(sentence));
+  console.log(classifier.getClassifications(sentence));
 
 }
 
