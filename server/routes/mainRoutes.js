@@ -9,4 +9,5 @@ var mainCtrl = require('./controllers/mainCtrl');
 module.exports = new express.Router()
 
   .get('/', mainCtrl.getIndex)
+  .get('/watch', mainCtrl.getWatchTwitter)
 ;

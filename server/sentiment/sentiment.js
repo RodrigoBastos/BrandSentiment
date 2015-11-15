@@ -49,9 +49,20 @@ function loads (){
   //Train
   classifier.train();
 
+  var sentenceTrigram = tokens.textToTrigram(sentence);
+
   //Test
   console.log(classifier.classify(sentence));
+  var result = classifier.getClassifications(sentence);
+  console.log(result[0].value > result[1].value);
   console.log(classifier.getClassifications(sentence));
+
+  sentenceTrigram.map(function(trigram, index){
+    console.log('trigram '+index, trigram);
+    console.log(classifier.classify(trigram));
+    console.log(classifier.getClassifications(trigram));
+  });
+
 
 }
 

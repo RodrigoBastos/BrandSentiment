@@ -106,6 +106,7 @@ function beginMonitoring(phrase) {
           if (data.lang === 'en') {
             sentiment(data.text, function (err, result) {
               tweetCount++;
+              console.log(data.text, result.score);
               tweetTotalSentiment += result.score;
             });
           }
