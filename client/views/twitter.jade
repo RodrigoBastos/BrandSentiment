@@ -1,0 +1,26 @@
+
+doctype html
+
+html
+  head
+    title #{title}
+    script(src='/socket.io/socket.io.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js')
+    script.
+      var socket = io.connect('http://localhost:3800');
+      socket.on('stream', function(score){
+
+        console.log(score);
+        $('#tweetpos').text('Tweets Positivos: '+score.pos);
+        $('#tweetneg').text('Tweets Negativos: '+score.neg);
+
+      });
+
+  body
+    form(action='/search', method='POST')
+      | Busca:
+      input(type='text', name='query')
+      input(type='submit', value='Submit')
+
+    #tweetpos
+    #tweetneg

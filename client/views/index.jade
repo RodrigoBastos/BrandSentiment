@@ -2,7 +2,10 @@
 doctype html
 html
   head
-    title BRAND SENTIMENT
+    title #{title}
   body
-    h1 Page Test
+    form(action='/search', method='POST')
+      | Busca:
+      input(type='text', name='query')
+      input(type='submit', value='Submit')
 

@@ -1,0 +1,14 @@
+doctype html
+html
+   head
+      title= title
+      script(src='/socket.io/socket.io.js')
+      script(src='//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js')
+      script(src='/js/index.js')
+   body
+      .container
+         div
+            .countSpanish
+            .countEnglish
+            ul.tweets(style="height: 600; overflow: scroll")
+

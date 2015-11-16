@@ -17,8 +17,9 @@ exports.getWatchTwitter = function (req, res) {
   res.send("Monitoring Twitter for \'" + phrase + "\'...  Logging Twitter traffic.");
   stream.on('tweet', function (tweet) {
     testTweetCount++;
-    if(testTweetCount % 10 === 0){
-      console.log("Tweet #" + testTweetCount + ":  " + tweet);
+    if(testTweetCount == 10){
+      res.send(tweet.text);
+      console.log("Tweet #" + testTweetCount + ":  " + tweet.text);
     }
   });
 
