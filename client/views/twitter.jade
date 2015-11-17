@@ -8,11 +8,14 @@ html
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js')
     script(src='js/bs.min.js')
 
-  body
-    form(action='/search', method='POST')
-      | Busca:
-      input(type='text', name='query')
-      input(type='submit', value='Submit')
+  body(ng-app='application.controllers', ng-controller='DashboardCtrl')
+
+    h1 QUERY: #{title}
+    h2 NAME: {{name}}
+
+    canvas#doughnut.chart.chart-doughnut(chart-data='data', chart-labels='labels')
+
+    h1 SCORE: {{score}}
 
     #tweetpos
     #tweetneg

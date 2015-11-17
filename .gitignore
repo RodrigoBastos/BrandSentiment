@@ -29,3 +29,5 @@ node_modules
 *.iml
 
 .idea
+
+client/source/components

@@ -1,0 +1,30 @@
+{
+  "name": "BrandSentiment",
+  "version": "0.0.1",
+  "homepage": "https://github.com/RodrigoBastos/BrandSentiment",
+  "authors": [
+    "Rodrigo Bastos <rodrigorozendobastos@gmail.com>"
+  ],
+  "description": "Analise de Sentimento de Marcas atraves do Twitter em Tempo Real",
+  "main": "twitter-io.js",
+  "keywords": [
+    "Sentiment",
+    "Analysis",
+    "Twitter",
+    "Brand"
+  ],
+  "license": "None",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Chart.js": "~1.0.2",
+    "angular": "~1.4.7",
+    "angular-chart.js": "~0.8.5",
+    "ng-socket-io": "~0.2.0"
+  }
+}
