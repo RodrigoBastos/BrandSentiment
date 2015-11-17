@@ -31,33 +31,36 @@ app.use(expressSession({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'client', 'public')));
 
-
 var stream = null;
 
 app.get('/', function (req, res) {
+
+  if(stream != null)
+    stream.stop();
   res.render('index', {title: 'BRAND SENTIMENT'});
 });
 
 app.post('/search', function (req, res) {
 
   console.log(req.session);
+
+  if(stream != null)
+    stream.stop();
+
   var query = req.body.query;
   io.sockets.on('connection', function (socket) {
 
     var session = socket.handshake.session;
-    if(session.stream != null)
-      session.stream.stop();
-
     session.pos = 0;
     session.neg = 0;
     console.log('session', session);
     console.log('Connected');
-    session.stream = twitterClient.stream('statuses/filter', {
+    stream = twitterClient.stream('statuses/filter', {
       track: query,
-      lang:'pt'
+      language:'pt'
     });
 
-    session.stream.on('tweet', function (tweet) {
+    stream.on('tweet', function (tweet) {
 
       console.log('tweet', tweet.text);
       var result = analysisSentiment.classify(tweet.text);
@@ -91,15 +94,3 @@ io.use(function(socket, next) {
     });
   });
 });
-//io.sockets.on('connection', function (socket) {
-//  var stream = twitterClient.stream('statuses/filter', {
-//    'track':'playstation',
-//    'filter_level':'medium',
-//    'language': 'es,en'
-//  });
-//
-//  stream.on('tweet', function(tweet) {
-//    console.log('tweet', tweet.text);
-//    socket.emit('twitter', tweet.text);
-//  });
-//});
