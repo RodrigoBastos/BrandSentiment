@@ -52,10 +52,9 @@ app.post('/search', function (req, res) {
     session.neg = 0;
     console.log('session', session);
     console.log('Connected');
-    var countNegative = 0;
-    var countPositive = 0;
     session.stream = twitterClient.stream('statuses/filter', {
-      track: query
+      track: query,
+      lang:'pt'
     });
 
     session.stream.on('tweet', function (tweet) {
