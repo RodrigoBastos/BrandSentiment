@@ -1,10 +1,18 @@
 /**
  * Created by rodrigo on 09/07/15.
  */
-var fs        = require("fs");
-var natural   = require('natural');
-var tokens = require("./../ngram/tokenSentences");
+var fs                    = require("fs");
+var tokens                = require("./../ngram/tokenSentences");
+var natural               = require('natural');
+var keywordExtractor     = require("keyword-extractor");
 
+var extractorOptions = {
+  language:"portugueseTwo",
+  remove_digits: true,
+  return_changed_case:true,
+  remove_duplicates: false
+
+};
 
 var arrayNeg = [];
 var arrayPos = [];
@@ -17,11 +25,17 @@ var negatives = fs.readFileSync("sentences/negatives-sentences.txt", 'utf8').spl
 var positives = fs.readFileSync("sentences/positives-sentences.txt", "utf8").split('\n');
 
 
+var sentence = null;
+
 
 //Push negatives cases in classifier
 for(var i = 0; i < negatives.length;i++){
-  var trigramsNegative = tokens.textToTrigram(negatives[i]);
-
+  //Stopwords
+  console.log('Text', negatives[i]);
+  sentence = keywordExtractor.extract(negatives[i], extractorOptions).join(' ');
+  console.log('keywords', sentence);
+  var trigramsNegative = tokens.textToTrigram(sentence);
+  console.log('trigram', trigramsNegative);
   trigramsNegative.map(function(trigram){
     arrayNeg.push(trigram);
     classifier.addDocument(trigram, 'negative');
@@ -31,8 +45,11 @@ for(var i = 0; i < negatives.length;i++){
 //Push positves cases in Classifier
 for(i = 0; i < positives.length; i++){
 
-  var trigramsPositive = tokens.textToTrigram(positives[i]);
-
+  console.log('Text', positives[i]);
+  sentence = keywordExtractor.extract(positives[i], extractorOptions).join(' ');
+  console.log('keywords', sentence);
+  var trigramsPositive = tokens.textToTrigram(sentence);
+  console.log('trigram', trigramsPositive);
   trigramsPositive.map(function(trigram){
     arrayPos.push(trigram);
     classifier.addDocument(trigram, 'positive');

@@ -16,7 +16,8 @@
     "jade": "~1.11.0",
     "socket.io": "~1.3.7",
     "express-session": "~1.12.1",
-    "bower": "~1.6.5"
+    "bower": "~1.6.5",
+    "keyword-extractor": "git+https://github.com/RodrigoBastos/keyword-extractor.git"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
