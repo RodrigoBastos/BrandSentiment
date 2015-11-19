@@ -29,13 +29,16 @@ var sentence = null;
 
 
 //Push negatives cases in classifier
-for(var i = 0; i < negatives.length;i++){
+for(var i = 0; i < 300;i++){
   //Stopwords
-  console.log('Text', negatives[i]);
-  sentence = keywordExtractor.extract(negatives[i], extractorOptions).join(' ');
+  //console.log('Text', negatives[i]);
+  sentence = keywordExtractor.extract(negatives[i], extractorOptions);
   console.log('keywords', sentence);
-  var trigramsNegative = tokens.textToTrigram(sentence);
-  console.log('trigram', trigramsNegative);
+  var trigramsNegative = [sentence.join(' ')];
+  if(sentence.length > 2)
+    trigramsNegative = tokens.textToTrigram(sentence.join(' '));
+ // var trigramsNegative = tokens.textToTrigram(sentence);
+ // console.log('trigram', trigramsNegative);
   trigramsNegative.map(function(trigram){
     arrayNeg.push(trigram);
     classifier.addDocument(trigram, 'negative');
@@ -45,11 +48,14 @@ for(var i = 0; i < negatives.length;i++){
 //Push positves cases in Classifier
 for(i = 0; i < positives.length; i++){
 
-  console.log('Text', positives[i]);
-  sentence = keywordExtractor.extract(positives[i], extractorOptions).join(' ');
-  console.log('keywords', sentence);
-  var trigramsPositive = tokens.textToTrigram(sentence);
-  console.log('trigram', trigramsPositive);
+  //console.log('Text', positives[i]);
+  sentence = keywordExtractor.extract(positives[i], extractorOptions);
+  //console.log('keywords', sentence);
+  var trigramsPositive = [sentence.join(' ')];
+  if(sentence.length > 2)
+    trigramsPositive = tokens.textToTrigram(sentence.join(' '));
+  //var trigramsPositive = tokens.textToTrigram(sentence);
+  //console.log('trigram', trigramsPositive);
   trigramsPositive.map(function(trigram){
     arrayPos.push(trigram);
     classifier.addDocument(trigram, 'positive');
@@ -61,8 +67,8 @@ for(i = 0; i < positives.length; i++){
 classifier.train();
 
 //var sentenceTrigram = tokens.textToTrigram(sentence);
-//
-////Test
+
+//Test
 //console.log(classifier.classify(sentence));
 //var result = classifier.getClassifications(sentence);
 //console.log(result[0].value > result[1].value);
@@ -76,11 +82,44 @@ classifier.train();
 
 
 var classifySentiment = function (sentence) {
+
   return classifier.classify(sentence);
 };
 
 var objectSentiment = function (sentence) {
-  return classifier.getClassifications(sentence);
+  console.log('objectSentiment - Text', sentence);
+  sentence = keywordExtractor.extract(sentence, extractorOptions);
+
+  var trigrams = [sentence];
+  if(sentence.length > 2)
+    trigrams = tokens.textToTrigram(sentence.join(' '));
+
+  console.log('objectSentiment - keywords', trigrams);
+  var scorePos = 0;
+  var scoreNeg = 0;
+
+
+  trigrams.map(function(trigram, index){
+    console.log('trigram '+index+': ', trigram);
+
+    var obj = classifier.getClassifications(trigram);
+
+    obj.map(function(item){
+      if(item.label == 'positive')
+        scorePos += item.value;
+
+      if(item.label == 'negative')
+        scoreNeg += item.value;
+    });
+  });
+
+  console.log('SOCRE POSITIVE: ', scorePos);
+  console.log('SOCRE NEGATIVE: ', scoreNeg);
+
+  if(scorePos > scoreNeg)
+    return 'positive';
+
+  return 'negative';
 };
 
 

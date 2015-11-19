@@ -5,7 +5,9 @@
 var fs = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
-var keywords = ['paz', 'amor', 'felicidade', 'gosto muito', 'carinho', 'gentileza'];
+var keywords = ['Emtech','gentileza', 'alegria', 'alegre', 'felicidade', 'sorte',
+  'tranquilidade', 'positividade', 'boas festas', 'sentimento bom', 'coração',
+  'amor verdadeiro'];
 
 
 var stream = twitterClient.stream('statuses/filter', { track: keywords });
@@ -19,12 +21,12 @@ function onTwitter (tweet) {
   console.log(tweet.text);
   var size = tweet.text.split(' ').length;
 
-  if (size < 6){
-    tweets.push(tweet.text);
-    count++;
-  }
 
-  if (count == 50) {
+  tweets.push(tweet.text);
+  count++;
+
+
+  if (count == 100) {
     stream.stop();
     onDone();
   }
