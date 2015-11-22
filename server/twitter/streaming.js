@@ -5,9 +5,8 @@
 var fs = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
-var keywords = ['Emtech','gentileza', 'alegria', 'alegre', 'felicidade', 'sorte',
-  'tranquilidade', 'positividade', 'boas festas', 'sentimento bom', 'coração',
-  'amor verdadeiro'];
+var keywords = ['paz no mundo', 'parabéns', 'viva aos noivos', 'casamento', 'Eu amo minha mãe',
+'Prosperidade', 'Hoje estou feliz', 'golaço', 'alegria'];
 
 
 var stream = twitterClient.stream('statuses/filter', { track: keywords });

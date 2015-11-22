@@ -63,7 +63,7 @@ app.post('/search', function (req, res) {
     stream.on('tweet', function (tweet) {
 
       console.log('tweet', tweet.text);
-      var result = analysisSentiment.object(tweet.text);
+      var result = analysisSentiment.classify(tweet.text);
       if (result == 'positive')
         session.pos++;
       else

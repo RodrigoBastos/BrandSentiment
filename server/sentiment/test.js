@@ -19,12 +19,14 @@ var positiveSentences = [
   'Estou muito feliz hoje',
   'Que notícia maravilhosa',
   'Ela está alegre e contente',
-  'Eu vou ganhar o jogo!'
+  'Eu gosto muito de você',
+  'Obrigado por tudo!',
+  'não estou triste'
 ];
 
 
 
-negativeSentences.map(function(sentence){
+positiveSentences.map(function(sentence){
   var result = analysisSentiment.object(sentence);
   console.log(sentence+' : ', result);
 });
