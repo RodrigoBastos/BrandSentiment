@@ -4,18 +4,38 @@ doctype html
 html
   head
     title #{title}
+
+
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+
+    link(href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.0.1/css/foundation.css")
+    link(rel='stylesheet', href='css/style.css')
+    link(href='https://fonts.googleapis.com/css?family=Lato', rel='stylesheet', type='text/css')
+
     script(src='/socket.io/socket.io.js')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js')
     script(src='js/bs.min.js')
 
   body(ng-app='application.controllers', ng-controller='DashboardCtrl')
+    .main-container
+      .panel
+        h3.text-center Picos
 
-    h1 QUERY: #{title}
-    h2 NAME: {{name}}
+        hr
 
-    canvas#doughnut.chart.chart-doughnut(chart-data='data', chart-labels='labels')
+        .label.danger Negative
+        p {{score.negSentence}}
 
-    h1 SCORE: {{score}}
+        hr
 
-    #tweetpos
-    #tweetneg
+        .label.success Positive
+        p {{score.posSentence}}
+      .panel
+        //h1 Graph
+        canvas#doughnut.chart.chart-doughnut(chart-data='data', chart-labels='labels')
+      .panel
+        h3 Emoção
+        img(ng-src='getEmotion()')
+
+

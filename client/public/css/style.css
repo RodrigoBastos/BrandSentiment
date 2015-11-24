@@ -1,10 +1,38 @@
 
-.test {
-    background-color: #0000CD;
+.bg {
+    text-align: center;
+    background: url('../images/bg6.jpg') no-repeat;
+    margin: auto;
 }
 
-.md-toolbar-tools h1 {
-    font-size: inherit;
-    font-weight: inherit;
-    margin: inherit;
+.main-container {
+    display: flex !important;
+    font-family: 'Lato', sans-serif;
 }
+
+.panel {
+    flex: 1 1 auto;
+    background: #196780;
+    margin: 10px;
+    padding: 10px 10px 10px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 6px 10px rgba(0,0,0,0.1);
+}
+
+canvas {
+    width: 300px !important;
+    height: auto !important;
+}
+
+#centro {
+    width: 40%;
+    height: 100px;
+    position: absolute;
+    top: 50%;
+    left: 38%;
+    margin-top: -65px;
+    margin-left: -50px;
+    z-index: 99999;
+}
+
+

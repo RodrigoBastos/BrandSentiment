@@ -3,9 +3,34 @@ doctype html
 html
   head
     title #{title}
-  body
-    form(action='/search', method='POST')
-      | Busca:
-      input(type='text', name='query')
-      input(type='submit', value='Submit')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+
+    link(rel='stylesheet', href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.0.1/css/foundation.css")
+    link(rel='stylesheet', href='css/style.css')
+
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js')
+
+  body.bg
+
+    form(id='myForm', action='/search', method='POST')
+      .row
+        .large-12.columns
+          .row.collapse.postfix-radius#centro
+            .small-10.columns
+              input(type='text', placeholder='Digite o nome da marca para análise', name='query')
+            .small-2.columns
+              a.button.postfix.expand(href='#', onclick="document.getElementById('myForm').submit();") Pesquisar
+
+    //input(type='text', name='query')
+      //input(type='submit', value='Submit')
+
+    //.main-container
+      .panel
+        h1 Best
+      .panel
+        h1 Graph
+        //canvas#doughnut.chart.chart-doughnut(chart-data='data', chart-labels='labels')
+      .panel
+        h1 Graph 2
 
