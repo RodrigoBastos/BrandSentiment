@@ -11,7 +11,12 @@ var negativeSentences = [
   'Estou com muita raiva hoje',
   'A sua morte foi horrível',
   'Ela está triste e chorando',
-  'Eu vou morrer!'
+  'Eu vou morrer!',
+  'Enquanto uns fazem contagem para o natal, eu faço para Star Wars.',
+  'unfollow em quem fica comparando jogos vorazes e star wars',
+  'quero ganhar a cortesia: "Star Wars: Uma Nova Esperança" https://t.co/luNiOohLfe #skoob',
+  'Star Wars: O desperta da força já tá no mesmo nivel de revelações q o trailer de Age of Ultron tiveram'
+
 ];
 
 var positiveSentences = [
@@ -26,8 +31,8 @@ var positiveSentences = [
 
 
 
-positiveSentences.map(function(sentence){
-  var result = analysisSentiment.object(sentence);
-  console.log(sentence+' : ', result);
+negativeSentences.map(function(sentence){
+  var result = analysisSentiment.sentimet(sentence);
+  console.log(result);
 });
 

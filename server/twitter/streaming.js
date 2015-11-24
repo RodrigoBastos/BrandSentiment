@@ -5,8 +5,8 @@
 var fs = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
-var keywords = ['paz no mundo', 'parabéns', 'viva aos noivos', 'casamento', 'Eu amo minha mãe',
-'Prosperidade', 'Hoje estou feliz', 'golaço', 'alegria'];
+var keywords = ['olá', 'qual o seu nome', 'menina', 'menino', 'feijão', 'arroz',
+'macarrão', 'danone', 'futebol', 'orkut', 'brasil', 'garoto', 'almoço', 'jantar', 'é azul', 'é preto'];
 
 
 var stream = twitterClient.stream('statuses/filter', { track: keywords });

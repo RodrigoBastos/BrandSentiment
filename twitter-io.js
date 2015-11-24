@@ -53,22 +53,53 @@ app.post('/search', function (req, res) {
     var session = socket.handshake.session;
     session.pos = 0;
     session.neg = 0;
+    session.ntr = 0;
+    session.posSentence = '';
+    session.posScore = 0;
+    session.negSentence = '';
+    session.negScore = 0;
     console.log('session', session);
     console.log('Connected');
     stream = twitterClient.stream('statuses/filter', {
-      track: query,
-      language:'pt'
+      track: query
     });
 
     stream.on('tweet', function (tweet) {
 
-      console.log('tweet', tweet.text);
-      var result = analysisSentiment.classify(tweet.text);
-      if (result == 'positive')
-        session.pos++;
-      else
-        session.neg++;
-      io.sockets.emit('stream', {pos:session.pos, neg:session.neg});
+
+
+      if(tweet.lang == 'pt'){
+        console.log('tweet', tweet.text);
+
+        var obj = analysisSentiment.sentimet(tweet.text);
+
+        console.log('RESULTADO: ', obj);
+        if (obj.result == 'positive'){
+          if(parseFloat(obj.score) > session.posScore){
+            session.posScore = parseFloat(obj.score);
+            session.posSentence = tweet.text;
+          }
+          session.pos++;
+        }
+
+
+        else if (obj.result == 'negative'){
+          if(parseFloat(obj.score) > session.negScore){
+            session.negScore = parseFloat(obj.score);
+            session.negSentence = tweet.text;
+          }
+          session.neg++;
+        }
+
+        else
+          session.ntr++;
+
+
+        io.sockets.emit('stream', {posScore:session.posScore, posSentence:session.posSentence, negScore:session.negScore, negSentence:session.negSentence, pos:session.pos, neg:session.neg, ntr:session.ntr});
+
+      }
+
+
 
     });
   });
