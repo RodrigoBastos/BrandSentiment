@@ -3,6 +3,7 @@
  */
 var _                     = require('lodash');
 var fs                    = require("fs");
+var svm                   = require("node-svm");
 var tokens                = require("./../ngram/tokenSentences");
 var natural               = require('natural');
 var keywordExtractor      = require("keyword-extractor");
@@ -19,8 +20,11 @@ var extractorOptions = {
 var arrayNeg = [];
 var arrayPos = [];
 
-  //Create classifier
-var classifier = new natural.BayesClassifier();
+  //Create classifierBayes
+var classifierBayes = new natural.BayesClassifier();
+var classifierSVM = new svm.CSVC();
+
+var based = [];
 
   //Read Files Neagtive and Positive
 var negatives = fs.readFileSync("sentences/negatives-sentences.txt", 'utf8').split('\n');
@@ -31,37 +35,57 @@ var neutras = fs.readFileSync("sentences/neutros-sentences.txt", "utf8").split('
 var sentence = null;
 
 
-//Push negatives cases in classifier
+//Push negatives cases in classifierBayes
 for(var i = 0; i < negatives.length; i++){
   //Stopwords
   //console.log('Text', negatives[i]);
-  sentence = keywordExtractor.extract(negatives[i], extractorOptions);
+
+  sentence = cleanSentence(negatives[i]);
+  //console.log('Sem repetidos: ', sentence);
+  sentence = removeLinksAndUsername(sentence);
+
+  sentence = keywordExtractor.extract(sentence, extractorOptions);
   console.log('keywords', sentence);
   var trigramsNegative = [sentence.join(' ')];
   if(sentence.length > 2)
     trigramsNegative = tokens.textToTrigram(sentence.join(' '));
+  else if (sentence.length == 2)
+    trigramsNegative = tokens.textToBigram(sentence.join(' '));
+
  // var trigramsNegative = tokens.textToTrigram(sentence);
  // console.log('trigram', trigramsNegative);
   trigramsNegative.map(function(trigram){
     arrayNeg.push(trigram);
-    classifier.addDocument(trigram, 'negative');
+    if(trigram.length > 1 && trigram instanceof Array) {
+      classifierBayes.addDocument(trigram, 'negative');
+      based.push([trigram, 2]);
+    }
   });
 }
 
 //Push positves cases in Classifier
 for(i = 0; i < positives.length; i++){
 
+  sentence = cleanSentence(positives[i]);
+  //console.log('Sem repetidos: ', sentence);
+  sentence = removeLinksAndUsername(sentence);
+
   //console.log('Text', positives[i]);
-  sentence = keywordExtractor.extract(positives[i], extractorOptions);
-  //console.log('keywords', sentence);
+  sentence = keywordExtractor.extract(sentence, extractorOptions);
+  console.log('keywords', sentence);
   var trigramsPositive = [sentence.join(' ')];
   if(sentence.length > 2)
     trigramsPositive = tokens.textToTrigram(sentence.join(' '));
+  else if (sentence.length == 2)
+    trigramsPositive = tokens.textToBigram(sentence.join(' '));
   //var trigramsPositive = tokens.textToTrigram(sentence);
   //console.log('trigram', trigramsPositive);
   trigramsPositive.map(function(trigram){
     arrayPos.push(trigram);
-    classifier.addDocument(trigram, 'positive');
+    if(trigram.length > 1 && trigram instanceof Array) {
+      classifierBayes.addDocument(trigram, 'positive');
+      based.push([trigram, 1]);
+    }
   });
 
 }
@@ -69,42 +93,40 @@ for(i = 0; i < positives.length; i++){
 //Push positves cases in Classifier
 for(i = 0; i < neutras.length; i++){
 
-  //console.log('Text', positives[i]);
-  sentence = keywordExtractor.extract(neutras[i], extractorOptions);
-  //console.log('keywords', sentence);
+  sentence = cleanSentence(neutras[i]);
+
+  sentence = removeLinksAndUsername(sentence);
+
+
+  sentence = keywordExtractor.extract(sentence, extractorOptions);
+  console.log('keywords', sentence);
   var trigramsNeutra = [sentence.join(' ')];
   if(sentence.length > 2)
     trigramsNeutra = tokens.textToTrigram(sentence.join(' '));
-  //var trigramsPositive = tokens.textToTrigram(sentence);
-  //console.log('trigram', trigramsPositive);
+  else if (sentence.length == 2)
+    trigramsNeutra = tokens.textToBigram(sentence.join(' '));
+
+
   trigramsNeutra.map(function(trigram){
     arrayPos.push(trigram);
-    classifier.addDocument(trigram, 'neutra');
+    if(trigram.length > 1 && trigram instanceof Array ){
+      classifierBayes.addDocument(trigram, 'neutra');
+      based.push([trigram, 0]);
+    }
+
   });
 
 }
 
+console.log(based);
+
 //Train
-classifier.train();
-
-//var sentenceTrigram = tokens.textToTrigram(sentence);
-
-//Test
-//console.log(classifier.classify(sentence));
-//var result = classifier.getClassifications(sentence);
-//console.log(result[0].value > result[1].value);
-//console.log(classifier.getClassifications(sentence));
-//
-//sentenceTrigram.map(function(trigram, index){
-//  console.log('trigram '+index, trigram);
-//  console.log(classifier.classify(trigram));
-//  console.log(classifier.getClassifications(trigram));
-//});
-
+classifierBayes.train();
+//classifierSVM.train(based);
 
 var classifySentiment = function (sentence) {
 
-  return classifier.classify(sentence);
+  return classifierBayes.classify(sentence);
 };
 
 var objectSentiment = function (sentence) {
@@ -124,7 +146,7 @@ var objectSentiment = function (sentence) {
   trigrams.map(function(trigram, index){
     console.log('trigram '+index+': ', trigram);
 
-    var obj = classifier.getClassifications(trigram);
+    var obj = classifierBayes.getClassifications(trigram);
 
     obj.map(function(item){
       if(item.label == 'positive')
@@ -166,7 +188,7 @@ var scoreSentiment = function (sentence) {
 
 
   trigrams.map(function(trigram, index){
-    var obj = classifier.getClassifications(trigram);
+    var obj = classifierBayes.getClassifications(trigram);
     score.push({trigram: JSON.stringify(trigram), classify: JSON.stringify(obj)});
   });
 
@@ -205,8 +227,8 @@ var getSentiment = function (sentence) {
 
   sentence = keywordExtractor.extract(sentence, extractorOptions).join(' ');
 
-  var obj = classifier.getClassifications(sentence);
-  var result = classifier.classify(sentence);
+  var obj = classifierBayes.getClassifications(sentence);
+  var result = classifierBayes.classify(sentence);
 
   //console.log(obj);
   var score = _(obj)
@@ -248,11 +270,17 @@ var getSentiment = function (sentence) {
   return {result: result, score: parseFloat(score)};
 };
 
-console.log(getSentiment('Estou triste com você!'));
+
+var getSVM = function (sentence) {
+  return classifierSVM.predict(sentence);
+};
+
+//console.log(getSVM(['Estou triste com você!']));
 
 module.exports = {
   classify: classifySentiment,
   object: objectSentiment,
   score: scoreSentiment,
-  sentimet: getSentiment
+  sentimet: getSentiment,
+  svm: getSVM
 };
