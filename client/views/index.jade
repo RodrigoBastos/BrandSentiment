@@ -13,24 +13,37 @@ html
 
   body.bg
 
+    h3.text-center(style='color:white;') Brand Sentiment
+
     form(id='myForm', action='/search', method='POST')
+      .row.collapse#centro
+        .small-9.columns
+          input(type='text', placeholder='Digite o nome da marca para análise', name='query')
+        .small-3.columns
+          a.button.info.expand.posfix( type='button', onclick="document.getElementById('myForm').submit();") Pesquisar
+
+
+
+    //form
+      .row.collapse
+        .small-9.columns
+          input(type='text', placeholder='small-9.columns')
+        .small-3.columns
+          span.button.postfix .com
+
+    //<div class="row collapse">
+    //<label>Input Label</label>
+    //<div class="small-9 columns">
+    //<input type="text" placeholder="small-9.columns" />
+    //</div>
+    //<div class="small-3 columns">
+    //<span class="postfix">.com</span>
+    //</div>
+
+    //form(id='myForm', action='/search', method='POST')
       .row
-        .large-12.columns
-          .row.collapse.postfix-radius#centro
-            .small-10.columns
-              input(type='text', placeholder='Digite o nome da marca para análise', name='query')
-            .small-2.columns
-              a.button.postfix.expand(href='#', onclick="document.getElementById('myForm').submit();") Pesquisar
-
-    //input(type='text', name='query')
-      //input(type='submit', value='Submit')
-
-    //.main-container
-      .panel
-        h1 Best
-      .panel
-        h1 Graph
-        //canvas#doughnut.chart.chart-doughnut(chart-data='data', chart-labels='labels')
-      .panel
-        h1 Graph 2
+        .small-8.columns
+          input(style='height:40px !important;', type='text', placeholder='Digite o nome da marca para análise', name='query')
+        .small-2.columns
+          a.button.info.expand( href='#', type='button', onclick="document.getElementById('myForm').submit();") Pesquisar
 

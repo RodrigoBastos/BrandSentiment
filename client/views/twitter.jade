@@ -9,7 +9,7 @@ html
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
 
-    link(href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.0.1/css/foundation.css")
+    link(rel='stylesheet', href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.0.1/css/foundation.css")
     link(rel='stylesheet', href='css/style.css')
     link(href='https://fonts.googleapis.com/css?family=Lato', rel='stylesheet', type='text/css')
 
@@ -17,25 +17,38 @@ html
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js')
     script(src='js/bs.min.js')
 
-  body(ng-app='application.controllers', ng-controller='DashboardCtrl')
-    .main-container
-      .panel
-        h3.text-center Picos
-
-        hr
-
-        .label.danger Negative
+  body.bg(ng-app='application.controllers', ng-controller='DashboardCtrl')
+    .row
+      .small-4.large-4.columns.dash
+        span.label.alert Negative
         p {{score.negSentence}}
 
-        hr
-
-        .label.success Positive
-        p {{score.posSentence}}
-      .panel
-        //h1 Graph
+      .small-4.large-4.columns.dash
         canvas#doughnut.chart.chart-doughnut(chart-data='data', chart-labels='labels')
-      .panel
+
+        .row(style='margin-bottom:10px;')
+          .small-4.columns
+            label Negativo
+              div.text-center(style='background:#F7464A;padding:5px 5px 5px 5px;')
+          .small-4.columns
+            label Neutro
+            div(style='background:gainsboro;padding:5px 5px 5px 5px;')
+          .small-4.columns
+            label Positivo
+            div(style='background:#97BBCD;padding:5px 5px 5px 5px;')
+
+        .row
+          .small-12.text-center
+            label Total de Mensagens
+            .label.info {{score.total}}
+
+      .small-4.large-4.columns.dash
+        span.label.success Positive
+        p {{score.posSentence}}
+
+
+      //.panel
         h3 Emoção
-        img(ng-src='getEmotion()')
+        img(src='{{getEmotion()}}', style='width:150px;height:auto;')
 
 
