@@ -3,7 +3,6 @@
  */
 var _                     = require('lodash');
 var fs                    = require("fs");
-var svm                   = require("node-svm");
 var tokens                = require("./../ngram/tokenSentences");
 var natural               = require('natural');
 var keywordExtractor      = require("keyword-extractor");
@@ -14,92 +13,77 @@ var extractorOptions = {
   remove_digits: true,
   return_changed_case:true,
   remove_duplicates: false
-
 };
 
 var arrayNeg = [];
 var arrayPos = [];
 
-  //Create classifierBayes
+//Create classifierBayes
 var classifierBayes = new natural.BayesClassifier();
-var classifierSVM = new svm.CSVC();
 
-var based = [];
-
-  //Read Files Neagtive and Positive
+//Read Files Neagtive and Positive
 var negatives = fs.readFileSync("sentences/negatives-sentences.txt", 'utf8').split('\n');
 var positives = fs.readFileSync("sentences/positives-sentences.txt", "utf8").split('\n');
 var neutras = fs.readFileSync("sentences/neutros-sentences.txt", "utf8").split('\n');
 
-
 var sentence = null;
-
 
 //Push negatives cases in classifierBayes
 for(var i = 0; i < negatives.length; i++){
+
   //Stopwords
-  //console.log('Text', negatives[i]);
-
-  sentence = cleanSentence(negatives[i]);
-  //console.log('Sem repetidos: ', sentence);
+  sentence = cleanSentence(negatives[i].toLowerCase());
   sentence = removeLinksAndUsername(sentence);
-
   sentence = keywordExtractor.extract(sentence, extractorOptions);
-  console.log('keywords', sentence);
+
   var trigramsNegative = [sentence.join(' ')];
   if(sentence.length > 2)
     trigramsNegative = tokens.textToTrigram(sentence.join(' '));
   else if (sentence.length == 2)
     trigramsNegative = tokens.textToBigram(sentence.join(' '));
 
- // var trigramsNegative = tokens.textToTrigram(sentence);
- // console.log('trigram', trigramsNegative);
   trigramsNegative.map(function(trigram){
     arrayNeg.push(trigram);
-    if(trigram.length > 1 && trigram instanceof Array) {
+    if(trigram.length > 1 && trigram instanceof Array)
       classifierBayes.addDocument(trigram, 'negative');
-      based.push([trigram, 2]);
-    }
   });
 }
+console.log('Frases Negativas carregadas!');
 
 //Push positves cases in Classifier
 for(i = 0; i < positives.length; i++){
 
-  sentence = cleanSentence(positives[i]);
-  //console.log('Sem repetidos: ', sentence);
+  sentence = cleanSentence(positives[i].toLowerCase());
+
   sentence = removeLinksAndUsername(sentence);
 
-  //console.log('Text', positives[i]);
   sentence = keywordExtractor.extract(sentence, extractorOptions);
-  console.log('keywords', sentence);
+
   var trigramsPositive = [sentence.join(' ')];
   if(sentence.length > 2)
     trigramsPositive = tokens.textToTrigram(sentence.join(' '));
   else if (sentence.length == 2)
     trigramsPositive = tokens.textToBigram(sentence.join(' '));
-  //var trigramsPositive = tokens.textToTrigram(sentence);
-  //console.log('trigram', trigramsPositive);
+
   trigramsPositive.map(function(trigram){
     arrayPos.push(trigram);
-    if(trigram.length > 1 && trigram instanceof Array) {
+    if(trigram.length > 1 && trigram instanceof Array)
       classifierBayes.addDocument(trigram, 'positive');
-      based.push([trigram, 1]);
-    }
   });
 
 }
 
+console.log('Frases Positivas carregadas!');
+
 //Push positves cases in Classifier
 for(i = 0; i < neutras.length; i++){
 
-  sentence = cleanSentence(neutras[i]);
+  sentence = cleanSentence(neutras[i].toLowerCase());
 
   sentence = removeLinksAndUsername(sentence);
 
-
   sentence = keywordExtractor.extract(sentence, extractorOptions);
-  console.log('keywords', sentence);
+
   var trigramsNeutra = [sentence.join(' ')];
   if(sentence.length > 2)
     trigramsNeutra = tokens.textToTrigram(sentence.join(' '));
@@ -109,23 +93,21 @@ for(i = 0; i < neutras.length; i++){
 
   trigramsNeutra.map(function(trigram){
     arrayPos.push(trigram);
-    if(trigram.length > 1 && trigram instanceof Array ){
+    if(trigram.length > 1 && trigram instanceof Array )
       classifierBayes.addDocument(trigram, 'neutra');
-      based.push([trigram, 0]);
-    }
+
 
   });
 
 }
-
-console.log(based);
+console.log('Frases Neutras carregadas!');
 
 //Train
 classifierBayes.train();
-//classifierSVM.train(based);
+
+console.log('Classificador Treinado!');
 
 var classifySentiment = function (sentence) {
-
   return classifierBayes.classify(sentence);
 };
 
@@ -160,9 +142,6 @@ var objectSentiment = function (sentence) {
     });
   });
 
-  console.log('SOCRE POSITIVE: ', scorePos);
-  console.log('SOCRE NEGATIVE: ', scoreNeg);
-
   if(scorePos > scoreNeg && scorePos > scoreNtr)
     return 'positive';
 
@@ -195,42 +174,16 @@ var scoreSentiment = function (sentence) {
   return score;
 };
 
-
-function removeLinksAndUsername (sentence) {
-  var words = sentence.split(' ');
-  var result = words.map(function(word){
-    //console.log('include: ', _.include(word, 'https://'));
-    if(!_.include(word, 'https://') && !_.include(word, '@'))
-      return word;
-  });
-
-  return result.join(' ');
-}
-
-function cleanSentence (sentence){
-
-  return sentence.replace(/(\?)+/, '?')
-    .replace(/(\.)+/, '.')
-    .replace(/(\!)+/, '!')
-    .replace(/(\))+/, ')')
-    .replace(/(\()+/, '(')
-  ;
-
-}
-
 var getSentiment = function (sentence) {
 
-  sentence = cleanSentence(sentence);
-  //console.log('Sem repetidos: ', sentence);
+  sentence = cleanSentence(sentence.toLowerCase());
   sentence = removeLinksAndUsername(sentence);
-  //console.log('Sem links: ', sentence);
 
   sentence = keywordExtractor.extract(sentence, extractorOptions).join(' ');
 
   var obj = classifierBayes.getClassifications(sentence);
   var result = classifierBayes.classify(sentence);
 
-  //console.log(obj);
   var score = _(obj)
     .filter(function(item) { return item.label == result; })
     .pluck('value')
@@ -252,13 +205,10 @@ var getSentiment = function (sentence) {
       .pluck('value')
       .value();
 
-    //console.log(negative);
     var distance = parseFloat(postivie) - parseFloat(negative);
     if(result == 'negative')
         distance =parseFloat(negative) - parseFloat(postivie);
 
-    //console.log(distance);
-    var scoreNtr = distance + neutra.value;
 
     if(parseFloat(neutra) > distance){
       score = parseFloat(neutra) ;
@@ -271,16 +221,33 @@ var getSentiment = function (sentence) {
 };
 
 
-var getSVM = function (sentence) {
-  return classifierSVM.predict(sentence);
-};
-
 //console.log(getSVM(['Estou triste com você!']));
+
+function removeLinksAndUsername (sentence) {
+  var words = sentence.split(' ');
+  var result = words.map(function(word){
+    //console.log('include: ', _.include(word, 'https://'));
+    if(!_.include(word, 'https://') && !_.include(word, '@'))
+      return word;
+  });
+
+  return result.join(' ');
+}
+
+function cleanSentence (sentence){
+
+  return sentence.replace(/(\?)+/, '?')
+    .replace(/(\.)+/, '.')
+    .replace(/(\!)+/, '!')
+    .replace(/(\))+/, ')')
+    .replace(/(\()+/, '(')
+    ;
+
+}
 
 module.exports = {
   classify: classifySentiment,
   object: objectSentiment,
   score: scoreSentiment,
-  sentimet: getSentiment,
-  svm: getSVM
+  sentimet: getSentiment
 };
