@@ -93,6 +93,43 @@ generateDocument(neutras.train, 'neutra');
 
 classifierBayes.train();
 
+var getSentimentNgram = function (sentence) {
+  sentence = cleanSentence(sentence.toLowerCase());
+  sentence = removeLinksAndUsername(sentence);
+
+  sentence = keywordExtractor.extract(sentence, extractorOptions);
+
+  var ngrams = [sentence.join(' ')];
+  if(sentence.length > 2)
+    ngrams = tokens.textToTrigram(sentence.join(' '));
+  else if (sentence.length == 2)
+    ngrams = tokens.textToBigram(sentence.join(' '));
+
+  var classification = {
+    result: '',
+    score: 0
+  };
+
+  ngrams.map(function(item){
+    var obj = classifierBayes.getClassifications(item);
+    var result = classifierBayes.classify(item);
+
+    var value = _(obj)
+      .filter(function(item) { return item.label == result; })
+      .pluck('value')
+      .value();
+
+    if(value > classification.score){
+      classification.score = value;
+      classification.result = result;
+    }
+
+
+  });
+
+  return classification;
+
+};
 
 var getSentiment = function (sentence) {
 
@@ -130,11 +167,11 @@ var getSentiment = function (sentence) {
       distance =parseFloat(negative) - parseFloat(postivie);
 
 
-    if(parseFloat(neutra) > distance){
-      score = parseFloat(neutra) ;
-      result = 'neutra';
-      console.log('Regra da Distancia');
-    }
+    //if(parseFloat(neutra) > distance){
+    //  score = parseFloat(neutra) ;
+    //  result = 'neutra';
+    //  console.log('Regra da Distancia');
+    //}
   }
 
   return {result: result, score: parseFloat(score)};
@@ -146,8 +183,8 @@ var countPos = 0;
 var countNtr = 0;
 console.log("TESTE NEGATIVAS");
 for(var x = 0; x < negatives.test.length; x++){
-  var negResponse = getSentiment(negatives.test[x]);
-  console.log(getSentiment(negatives.test[x]));
+  var negResponse = getSentimentNgram(negatives.test[x]);
+  //console.log(getSentiment(negatives.test[x]));
 
   if (negResponse.result == 'positive')
       countPos++;
@@ -169,8 +206,8 @@ countNeg = 0;
 countPos = 0;
 countNtr = 0;
 for(var p = 0; p < positives.test.length; p++){
-  var posResponse = getSentiment(positives.test[p]);
-  console.log(getSentiment(positives.test[p]));
+  var posResponse = getSentimentNgram(positives.test[p]);
+  //console.log(getSentiment(positives.test[p]));
 
   if (posResponse.result == 'positive')
     countPos++;
@@ -193,8 +230,8 @@ countPos = 0;
 countNtr = 0;
 console.log(neutras.test.length);
 for(var n = 0; n < neutras.test.length; n++){
-  var ntrResponse = getSentiment(neutras.test[n]);
-  console.log(getSentiment(neutras.test[n]));
+  var ntrResponse = getSentimentNgram(neutras.test[n]);
+ // console.log(getSentiment(neutras.test[n]));
 
   if (ntrResponse.result == 'positive')
     countPos++;

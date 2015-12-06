@@ -210,11 +210,11 @@ var getSentiment = function (sentence) {
         distance =parseFloat(negative) - parseFloat(postivie);
 
 
-    if(parseFloat(neutra) > distance){
-      score = parseFloat(neutra) ;
-      result = 'neutra';
-      console.log('Regra da Distancia');
-    }
+    //if(parseFloat(neutra) > distance){
+    //  score = parseFloat(neutra) ;
+    //  result = 'neutra';
+    //  console.log('Regra da Distancia');
+    //}
   }
 
   return {result: result, score: parseFloat(score)};
