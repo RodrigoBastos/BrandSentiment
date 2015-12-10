@@ -4,7 +4,7 @@
 
 var _                     = require('lodash');
 var fs                    = require('fs');
-var tokens                = require("./server/ngram/tokenSentences");
+var tokens                = require("../server/ngram/tokenSentences");
 var natural               = require('natural');
 var keywordExtractor      = require("keyword-extractor");
 
@@ -58,6 +58,8 @@ function preClassify (sentences){
 
 function generateDocument (sentences, label) {
 
+  var total = 0;
+
   for(var i = 0; i < sentences.length; i++){
 
     //Stopwords
@@ -71,9 +73,13 @@ function generateDocument (sentences, label) {
     else if (sentence.length == 2)
       ngrams = tokens.textToBigram(sentence.join(' '));
 
+
     ngrams.map(function(item){
-      if(item.length > 1 && item instanceof Array)
+      if(item.length > 1 && item instanceof Array){
+        total++;
         classifierBayes.addDocument(item, label);
+      }
+
     });
   }
 
