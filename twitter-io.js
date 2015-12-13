@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'client', 'public')));
 
 var stream = null;
 
+//Serviço principal da aplicação
 app.get('/', function (req, res) {
 
   if(stream != null)
@@ -40,6 +41,7 @@ app.get('/', function (req, res) {
   res.render('index', {title: 'BRAND SENTIMENT'});
 });
 
+//Serviço responsável pela análise de sentimento  e geração do Dashboard
 app.post('/search', function (req, res) {
 
   console.log(req.session);
@@ -47,10 +49,16 @@ app.post('/search', function (req, res) {
   if(stream != null)
     stream.stop();
 
+  //Consultada requisita pelo usuário
   var query = req.body.query;
+
+
+  //Inicialização do Socket
   io.sockets.on('connection', function (socket) {
 
     var session = socket.handshake.session;
+
+    //Informações para o dashboard
     session.pos = 0;
     session.neg = 0;
     session.ntr = 0;
@@ -58,21 +66,27 @@ app.post('/search', function (req, res) {
     session.posScore = 0;
     session.negSentence = '';
     session.negScore = 0;
-    console.log('session', session);
-    console.log('Connected');
+
+
+    //Criando Stream de conexão com o Twitter
     stream = twitterClient.stream('statuses/filter', {
       track: query
     });
 
     stream.on('tweet', function (tweet) {
 
-
-
+      //Apenas tweets da língua portuguesa
       if(tweet.lang == 'pt'){
         console.log('tweet', tweet.text);
 
+        //Classificando
         var obj = analysisSentiment.sentimet(tweet.text);
 
+        /**
+        * Atualizando informação do dashboard
+        **/
+
+        //Dados referente a classe positiva
         console.log('RESULTADO: ', obj);
         if (obj.result == 'positive'){
           if(parseFloat(obj.score) > session.posScore){
@@ -82,7 +96,7 @@ app.post('/search', function (req, res) {
           session.pos++;
         }
 
-
+        //Dados referente a classe negativa
         else if (obj.result == 'negative'){
           if(parseFloat(obj.score) > session.negScore){
             session.negScore = parseFloat(obj.score);
@@ -95,11 +109,10 @@ app.post('/search', function (req, res) {
           session.ntr++;
 
 
+        //Atualizando dados
         io.sockets.emit('stream', {posScore:session.posScore, posSentence:session.posSentence, negScore:session.negScore, negSentence:session.negSentence, pos:session.pos, neg:session.neg, ntr:session.ntr});
 
       }
-
-
 
     });
   });
@@ -108,9 +121,11 @@ app.post('/search', function (req, res) {
 });
 
 
+//Abrindo conexão do servidor na porta 3800
 var io = require("socket.io").listen(app.listen(3800));
 
 
+//Vinculando a sessão com o canal de comunicação do socket
 io.use(function(socket, next) {
   var data = socket.request;
   cookie(data, {}, function(err) {
