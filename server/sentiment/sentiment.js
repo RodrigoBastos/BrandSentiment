@@ -36,6 +36,7 @@ for(var i = 0; i < negatives.length; i++){
   sentence = removeLinksAndUsername(sentence);
   sentence = keywordExtractor.extract(sentence, extractorOptions);
 
+  //Ngram (Trigram or Bigram?)
   var trigramsNegative = [sentence.join(' ')];
   if(sentence.length > 2)
     trigramsNegative = tokens.textToTrigram(sentence.join(' '));
