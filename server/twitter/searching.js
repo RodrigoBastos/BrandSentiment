@@ -5,9 +5,9 @@ var fs  = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
 
-var keywords = ['morte em paris'];
+var keywords = [''];
 
-
+//Stream Twitter by Search
 for(var i=0; i < keywords.length; i++){
   twitterClient.get('search/tweets', { q: keywords[i] }, getSentences);
 }

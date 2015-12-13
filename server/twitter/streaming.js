@@ -1,14 +1,17 @@
 /**
  * Created by rodrigo on 06/07/15.
+ *
+ * Script responsável por extrair tweets com contexto positivo
+ * ou negativo para alimentar a base de conhecimento
  */
 
 var fs = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
-var keywords = ['olá', 'qual o seu nome', 'menina', 'menino', 'feijão', 'arroz',
-'macarrão', 'danone', 'futebol', 'orkut', 'brasil', 'garoto', 'almoço', 'jantar', 'é azul', 'é preto'];
+//Adicionar palavras/expressões com contexto positivo ou negativo
+var keywords = [];
 
-
+//Stream Twitter by Filter
 var stream = twitterClient.stream('statuses/filter', { track: keywords });
 
 var count = 0;
