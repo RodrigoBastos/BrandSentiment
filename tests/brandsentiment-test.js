@@ -18,7 +18,7 @@ var extractorOptions = {
   remove_duplicates: false
 };
 
-
+//Removendo Links e Usernames do texto de entrada
 function removeLinksAndUsername (sentence) {
   var words = sentence.split(' ');
   var result = words.map(function(word){
@@ -30,6 +30,7 @@ function removeLinksAndUsername (sentence) {
   return result.join(' ');
 }
 
+//Limpando texto de entrada
 function cleanSentence (sentence){
 
   return sentence.replace(/(\?)+/, '?')
@@ -41,6 +42,7 @@ function cleanSentence (sentence){
 
 }
 
+//Preparando dados de treino e teste
 function preClassify (sentences){
 
   var test = [];
@@ -93,12 +95,16 @@ var negatives = preClassify(sentencesNegatives);
 var positives = preClassify(sentencesPositives);
 var neutras = preClassify(sentencesNeutras);
 
+//Gerando os documentos de treino
 generateDocument(negatives.train, 'negative');
 generateDocument(positives.train, 'positive');
 generateDocument(neutras.train, 'neutra');
 
+//Treinando Classificador
 classifierBayes.train();
 
+
+//Classificação por NGRAM
 var getSentimentNgram = function (sentence) {
   sentence = cleanSentence(sentence.toLowerCase());
   sentence = removeLinksAndUsername(sentence);
@@ -137,6 +143,7 @@ var getSentimentNgram = function (sentence) {
 
 };
 
+//Classificação da frase de entrada
 var getSentiment = function (sentence) {
 
   sentence = cleanSentence(sentence.toLowerCase());
@@ -184,9 +191,14 @@ var getSentiment = function (sentence) {
 };
 
 
+/*
+* Testando classificador
+ */
+
 var countNeg = 0;
 var countPos = 0;
 var countNtr = 0;
+
 console.log("TESTE NEGATIVAS");
 for(var x = 0; x < negatives.test.length; x++){
   var negResponse = getSentimentNgram(negatives.test[x]);
@@ -219,30 +231,6 @@ for(var p = 0; p < positives.test.length; p++){
     countPos++;
 
   else if (posResponse.result == 'negative')
-    countNeg++;
-
-  else
-    countNtr++;
-}
-console.log("RESULTADO :");
-console.log("POS: ", countPos);
-console.log("NEG: ", countNeg);
-console.log("NTR: ", countNtr);
-
-
-console.log("TESTE NEUTRAS");
-countNeg = 0;
-countPos = 0;
-countNtr = 0;
-console.log(neutras.test.length);
-for(var n = 0; n < neutras.test.length; n++){
-  var ntrResponse = getSentimentNgram(neutras.test[n]);
- // console.log(getSentiment(neutras.test[n]));
-
-  if (ntrResponse.result == 'positive')
-    countPos++;
-
-  else if (ntrResponse.result == 'negative')
     countNeg++;
 
   else
