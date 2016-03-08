@@ -12,7 +12,7 @@ var keywordExtractor      = require("keyword-extractor");
 var classifierBayes = new natural.BayesClassifier();
 
 var extractorOptions = {
-  language:"portugueseTwo",
+  language:"portuguese",
   remove_digits: true,
   return_changed_case:true,
   remove_duplicates: false

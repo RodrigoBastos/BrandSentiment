@@ -16,7 +16,6 @@ var store  = new expressSession.MemoryStore();
 
 var app = express();
 
-
 app.set('views', path.join(__dirname, 'client', 'views'));
 app.set('view engine', 'jade');
 
@@ -44,7 +43,7 @@ app.get('/', function (req, res) {
 //Serviço responsável pela análise de sentimento  e geração do Dashboard
 app.post('/search', function (req, res) {
 
-  console.log(req.session);
+  console.log(req.body);
 
   if(stream != null)
     stream.stop();
@@ -56,6 +55,7 @@ app.post('/search', function (req, res) {
   //Inicialização do Socket
   io.sockets.on('connection', function (socket) {
 
+    console.log('SOcket Conectado!');
     var session = socket.handshake.session;
 
     //Informações para o dashboard
@@ -108,7 +108,6 @@ app.post('/search', function (req, res) {
         else
           session.ntr++;
 
-
         //Atualizando dados
         io.sockets.emit('stream', {posScore:session.posScore, posSentence:session.posSentence, negScore:session.negScore, negSentence:session.negSentence, pos:session.pos, neg:session.neg, ntr:session.ntr});
 
@@ -123,7 +122,6 @@ app.post('/search', function (req, res) {
 
 //Abrindo conexão do servidor na porta 3800
 var io = require("socket.io").listen(app.listen(3800));
-
 
 //Vinculando a sessão com o canal de comunicação do socket
 io.use(function(socket, next) {
