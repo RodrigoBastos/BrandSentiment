@@ -5,11 +5,11 @@ var fs  = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
 
-var keywords = [''];
+var keywords = ['Amor', 'Felicidade', 'Alegria', 'Muito bom', 'ótimo', 'Maravilhoso'];
 
 //Stream Twitter by Search
 for(var i=0; i < keywords.length; i++){
-  twitterClient.get('search/tweets', { q: keywords[i] }, getSentences);
+  twitterClient.get('search/tweets', { q: keywords[i], lang: 'pt', retweet: false }, getSentences);
 }
 
 function getSentences (error, tweets, response) {

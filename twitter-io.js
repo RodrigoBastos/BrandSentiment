@@ -70,7 +70,9 @@ app.post('/search', function (req, res) {
 
     //Criando Stream de conexão com o Twitter
     stream = twitterClient.stream('statuses/filter', {
-      track: query
+      track: query,
+      lang: 'pt',
+      retweeted: false
     });
 
     stream.on('tweet', function (tweet) {
