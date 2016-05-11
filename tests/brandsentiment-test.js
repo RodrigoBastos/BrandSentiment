@@ -39,7 +39,6 @@ function cleanSentence (sentence){
     .replace(/(\))+/, ')')
     .replace(/(\()+/, '(')
     ;
-
 }
 
 //Preparando dados de treino e teste
@@ -78,12 +77,14 @@ function generateDocument (sentences, label) {
 
     ngrams.map(function(item){
       if(item.length > 1 && item instanceof Array){
-        total++;
         classifierBayes.addDocument(item, label);
+        total++;
       }
 
     });
   }
+
+  console.log('TOTAL DOCUMENT: ', total);
 
 }
 
@@ -102,7 +103,6 @@ generateDocument(neutras.train, 'neutra');
 
 //Treinando Classificador
 classifierBayes.train();
-
 
 //Classificação por NGRAM
 var getSentimentNgram = function (sentence) {
@@ -177,14 +177,14 @@ var getSentiment = function (sentence) {
 
     var distance = parseFloat(postivie) - parseFloat(negative);
     if(result == 'negative')
-      distance =parseFloat(negative) - parseFloat(postivie);
+      distance = parseFloat(negative) - parseFloat(postivie);
 
 
-    //if(parseFloat(neutra) > distance){
-    //  score = parseFloat(neutra) ;
-    //  result = 'neutra';
-    //  console.log('Regra da Distancia');
-    //}
+    if(parseFloat(neutra) > distance){
+      score = parseFloat(neutra) ;
+      result = 'neutra';
+      console.log('Regra da Distancia');
+    }
   }
 
   return {result: result, score: parseFloat(score)};
@@ -213,6 +213,7 @@ for(var x = 0; x < negatives.test.length; x++){
   else
     countNtr++;
 }
+
 console.log("RESULTADO :");
 console.log("POS: ", countPos);
 console.log("NEG: ", countNeg);
@@ -223,6 +224,7 @@ console.log("TESTE POSITIVAS");
 countNeg = 0;
 countPos = 0;
 countNtr = 0;
+
 for(var p = 0; p < positives.test.length; p++){
   var posResponse = getSentimentNgram(positives.test[p]);
   //console.log(getSentiment(positives.test[p]));
@@ -236,6 +238,7 @@ for(var p = 0; p < positives.test.length; p++){
   else
     countNtr++;
 }
+
 console.log("RESULTADO :");
 console.log("POS: ", countPos);
 console.log("NEG: ", countNeg);

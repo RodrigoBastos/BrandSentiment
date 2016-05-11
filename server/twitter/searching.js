@@ -5,7 +5,7 @@ var fs  = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
 
-var keywords = ['Amor', 'Felicidade', 'Alegria', 'Muito bom', 'ótimo', 'Maravilhoso'];
+var keywords = ['Tv Globo', 'Netflix', 'Tv Record', 'Spotify'];
 
 //Stream Twitter by Search
 for(var i=0; i < keywords.length; i++){
@@ -20,6 +20,7 @@ function getSentences (error, tweets, response) {
 
   for (var i = 0; i < obj.length; i++){
     console.log(obj[i].text);
+    //if(obj[i].text.length <= 100)
     sentences.push(obj[i].text);
   }
 
