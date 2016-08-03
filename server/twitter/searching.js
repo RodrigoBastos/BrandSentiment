@@ -5,7 +5,7 @@ var fs  = require('fs');
 var twitterClient = require('../config/index.js').twitterClient;
 
 
-var keywords = ['Tv Globo', 'Netflix', 'Tv Record', 'Spotify'];
+var keywords = ['Google', 'Apple', 'Microsoft'];
 
 //Stream Twitter by Search
 for(var i=0; i < keywords.length; i++){

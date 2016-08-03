@@ -47,8 +47,10 @@ function preClassify (sentences){
   var test = [];
   var train = [];
 
+  console.log('SENTENCES', sentences.length);
+
   for(var i = 0; i < sentences.length; i++){
-    if (i < 50)
+    if (i < 70)
       test.push(sentences[i]);
     else
       train.push(sentences[i]);
@@ -77,14 +79,17 @@ function generateDocument (sentences, label) {
 
     ngrams.map(function(item){
       if(item.length > 1 && item instanceof Array){
-        classifierBayes.addDocument(item, label);
-        total++;
+        if (total < 200){
+          classifierBayes.addDocument(item, label);
+          total++;
+        }
+
       }
 
     });
   }
 
-  console.log('TOTAL DOCUMENT: ', total);
+  console.log('TOTAL DOCUMENT: ', total, label);
 
 }
 
