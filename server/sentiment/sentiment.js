@@ -1,10 +1,7 @@
-/**
- * Created by rodrigo on 09/07/15.
- */
-var _                     = require('lodash');
+var _                     = require("lodash");
 var fs                    = require("fs");
 var tokens                = require("./../ngram/tokenSentences");
-var natural               = require('natural');
+var natural               = require("natural");
 var keywordExtractor      = require("keyword-extractor");
 
 
@@ -22,9 +19,9 @@ var arrayPos = [];
 var classifierBayes = new natural.BayesClassifier();
 
 //Read Files Neagtive and Positive
-var negatives = fs.readFileSync("sentences/negatives-sentences.txt", 'utf8').split('\n');
-var positives = fs.readFileSync("sentences/positives-sentences.txt", "utf8").split('\n');
-var neutras = fs.readFileSync("sentences/neutros-sentences.txt", "utf8").split('\n');
+var negatives = fs.readFileSync("sentences/negatives-sentences.txt", "utf8").split("\n");
+var positives = fs.readFileSync("sentences/positives-sentences.txt", "utf8").split("\n");
+var neutras = fs.readFileSync("sentences/neutros-sentences.txt", "utf8").split("\n");
 
 var sentence = null;
 
@@ -37,19 +34,19 @@ for(var i = 0; i < negatives.length; i++){
   sentence = keywordExtractor.extract(sentence, extractorOptions);
 
   //Ngram (Trigram or Bigram?)
-  var trigramsNegative = [sentence.join(' ')];
+  var trigramsNegative = [sentence.join(" ")];
   if(sentence.length > 2)
-    trigramsNegative = tokens.textToTrigram(sentence.join(' '));
+    trigramsNegative = tokens.textToTrigram(sentence.join(" "));
   else if (sentence.length == 2)
-    trigramsNegative = tokens.textToBigram(sentence.join(' '));
+    trigramsNegative = tokens.textToBigram(sentence.join(" "));
 
   trigramsNegative.map(function(trigram){
     arrayNeg.push(trigram);
     if(trigram.length > 1 && trigram instanceof Array)
-      classifierBayes.addDocument(trigram, 'negative');
+      classifierBayes.addDocument(trigram, "negative");
   });
 }
-console.log('Frases Negativas carregadas!');
+console.log("Frases Negativas carregadas!");
 
 //Push positves cases in Classifier
 for(i = 0; i < positives.length; i++){
@@ -60,21 +57,21 @@ for(i = 0; i < positives.length; i++){
 
   sentence = keywordExtractor.extract(sentence, extractorOptions);
 
-  var trigramsPositive = [sentence.join(' ')];
+  var trigramsPositive = [sentence.join(" ")];
   if(sentence.length > 2)
-    trigramsPositive = tokens.textToTrigram(sentence.join(' '));
+    trigramsPositive = tokens.textToTrigram(sentence.join(" "));
   else if (sentence.length == 2)
-    trigramsPositive = tokens.textToBigram(sentence.join(' '));
+    trigramsPositive = tokens.textToBigram(sentence.join(" "));
 
   trigramsPositive.map(function(trigram){
     arrayPos.push(trigram);
     if(trigram.length > 1 && trigram instanceof Array)
-      classifierBayes.addDocument(trigram, 'positive');
+      classifierBayes.addDocument(trigram, "positive");
   });
 
 }
 
-console.log('Frases Positivas carregadas!');
+console.log("Frases Positivas carregadas!");
 
 //Push positves cases in Classifier
 for(i = 0; i < neutras.length; i++){
@@ -85,86 +82,86 @@ for(i = 0; i < neutras.length; i++){
 
   sentence = keywordExtractor.extract(sentence, extractorOptions);
 
-  var trigramsNeutra = [sentence.join(' ')];
+  var trigramsNeutra = [sentence.join(" ")];
   if(sentence.length > 2)
-    trigramsNeutra = tokens.textToTrigram(sentence.join(' '));
+    trigramsNeutra = tokens.textToTrigram(sentence.join(" "));
   else if (sentence.length == 2)
-    trigramsNeutra = tokens.textToBigram(sentence.join(' '));
+    trigramsNeutra = tokens.textToBigram(sentence.join(" "));
 
 
   trigramsNeutra.map(function(trigram){
     arrayPos.push(trigram);
     if(trigram.length > 1 && trigram instanceof Array )
-      classifierBayes.addDocument(trigram, 'neutra');
+      classifierBayes.addDocument(trigram, "neutra");
 
 
   });
 
 }
-console.log('Frases Neutras carregadas!');
+console.log("Frases Neutras carregadas!");
 
 //Train
 classifierBayes.train();
 
-console.log('Classificador Treinado!');
+console.log("Classificador Treinado!");
 
 var classifySentiment = function (sentence) {
   return classifierBayes.classify(sentence);
 };
 
 var objectSentiment = function (sentence) {
-  console.log('objectSentiment - Text', sentence);
+  console.log("objectSentiment - Text", sentence);
   sentence = keywordExtractor.extract(sentence, extractorOptions);
 
   var trigrams = [sentence];
   if(sentence.length > 2)
-    trigrams = tokens.textToTrigram(sentence.join(' '));
+    trigrams = tokens.textToTrigram(sentence.join(" "));
 
-  console.log('objectSentiment - keywords', trigrams);
+  console.log("objectSentiment - keywords", trigrams);
   var scorePos = 0;
   var scoreNeg = 0;
   var scoreNtr = 0;
 
 
   trigrams.map(function(trigram, index){
-    console.log('trigram '+index+': ', trigram);
+    console.log("trigram "+index+": ", trigram);
 
     var obj = classifierBayes.getClassifications(trigram);
 
     obj.map(function(item){
-      if(item.label == 'positive')
+      if(item.label == "positive")
         scorePos += item.value;
 
-      if(item.label == 'negative')
+      if(item.label == "negative")
         scoreNeg += item.value;
 
-      if(item.label == 'neutra')
+      if(item.label == "neutra")
         scoreNtr += item.value;
     });
   });
 
   if(scorePos > scoreNeg && scorePos > scoreNtr)
-    return 'positive';
+    return "positive";
 
   else if(scoreNeg > scorePos && scoreNeg > scoreNtr)
-    return 'negative';
+    return "negative";
 
   else
-    return 'neutra';
+    return "neutra";
 };
 
 var scoreSentiment = function (sentence) {
 
-  console.log('sentence :', sentence);
+  console.log("sentence :", sentence);
   sentence = keywordExtractor.extract(sentence, extractorOptions);
   var score = [];
-  console.log('keyword :', sentence);
+  console.log("keyword :", sentence);
 
   var trigrams = [sentence];
   if(sentence.length > 2)
-    trigrams = tokens.textToTrigram(sentence.join(' '));
+    trigrams = tokens.textToTrigram(sentence.join(" "));
 
-  console.log('trigrams :', trigrams);
+  console.log("trigrams :", trigrams);
 
 
   trigrams.map(function(trigram, index){
@@ -180,41 +177,41 @@ var getSentiment = function (sentence) {
   sentence = cleanSentence(sentence.toLowerCase());
   sentence = removeLinksAndUsername(sentence);
 
-  sentence = keywordExtractor.extract(sentence, extractorOptions).join(' ');
+  sentence = keywordExtractor.extract(sentence, extractorOptions).join(" ");
 
   var obj = classifierBayes.getClassifications(sentence);
   var result = classifierBayes.classify(sentence);
 
   var score = _(obj)
     .filter(function(item) { return item.label == result; })
-    .pluck('value')
+    .pluck("value")
     .value();
 
-  if(result != 'neutra'){
+  if(result != "neutra"){
     var negative = _(obj)
-      .filter(function(item) { return item.label == 'negative'; })
-      .pluck('value')
+      .filter(function(item) { return item.label == "negative"; })
+      .pluck("value")
       .value();
 
     var postivie = _(obj)
-      .filter(function(item) { return item.label == 'positive'; })
-      .pluck('value')
+      .filter(function(item) { return item.label == "positive"; })
+      .pluck("value")
       .value();
 
     var neutra = _(obj)
-      .filter(function(item) { return item.label == 'neutra'; })
-      .pluck('value')
+      .filter(function(item) { return item.label == "neutra"; })
+      .pluck("value")
       .value();
 
     var distance = parseFloat(postivie) - parseFloat(negative);
-    if(result == 'negative')
+    if(result == "negative")
         distance =parseFloat(negative) - parseFloat(postivie);
 
 
     //if(parseFloat(neutra) > distance){
     //  score = parseFloat(neutra) ;
-    //  result = 'neutra';
-    //  console.log('Regra da Distancia');
+    //  result = "neutra";
+    //  console.log("Regra da Distancia");
     //}
   }
 
@@ -222,26 +219,26 @@ var getSentiment = function (sentence) {
 };
 
 
-//console.log(getSVM(['Estou triste com você!']));
+//console.log(getSVM(["Estou triste com você!"]));
 
 function removeLinksAndUsername (sentence) {
-  var words = sentence.split(' ');
+  var words = sentence.split(" ");
   var result = words.map(function(word){
-    //console.log('include: ', _.include(word, 'https://'));
-    if(!_.include(word, 'https://') && !_.include(word, '@'))
+    //console.log("include: ", _.include(word, "https://"));
+    if(!_.include(word, "https://") && !_.include(word, "@"))
       return word;
   });
 
-  return result.join(' ');
+  return result.join(" ");
 }
 
 function cleanSentence (sentence){
 
-  return sentence.replace(/(\?)+/, '?')
-    .replace(/(\.)+/, '.')
-    .replace(/(\!)+/, '!')
-    .replace(/(\))+/, ')')
-    .replace(/(\()+/, '(')
+  return sentence.replace(/(\?)+/, "?")
+    .replace(/(\.)+/, ".")
+    .replace(/(\!)+/, "!")
+    .replace(/(\))+/, ")")
+    .replace(/(\()+/, "(")
     ;
 
 }

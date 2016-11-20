@@ -1,8 +1,4 @@
-/**
- * Created by rodrigo on 17/11/15.
- */
 // include partials/bs-twitter-count.js
-
 //= include ../components/angular/angular.js
 //= include ../components/Chart.js/Chart.js
 //= include ../components/angular-chart.js/dist/angular-chart.js
@@ -11,8 +7,8 @@
 //= include partials/bs-controllers.js
 
 (function () {
-  angular.module('application', [
-    'chart.js',
-    'application.controllers'
+  angular.module("application", [
+    "chart.js",
+    "application.controllers"
   ])
 })();

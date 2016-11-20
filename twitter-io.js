@@ -1,23 +1,19 @@
-/**
- * Created by rodrigo on 15/11/15.
- */
+var path                  = require("path");
+var express               = require("express");
+var bodyParser            = require("body-parser");
+var cookieParser          = require("cookie-parser");
+var expressSession        = require("express-session");
 
-var path                  = require('path');
-var express               = require('express');
-var bodyParser            = require('body-parser');
-var cookieParser          = require('cookie-parser');
-var expressSession        = require('express-session');
-
-var twitterClient         = require('./server/config/index.js').twitterClient;
-var analysisSentiment     = require('./server/sentiment/sentiment.js');
+var twitterClient         = require("./server/config/index.js").twitterClient;
+var analysisSentiment     = require("./server/sentiment/sentiment.js");
 
 var cookie = cookieParser(process.env.SESSION_SECRET);
 var store  = new expressSession.MemoryStore();
 
 var app = express();
 
-app.set('views', path.join(__dirname, 'client', 'views'));
-app.set('view engine', 'jade');
+app.set("views", path.join(__dirname, "client", "views"));
+app.set("view engine", "jade");
 
 app.use(bodyParser.json());
 app.use(expressSession({
@@ -28,20 +24,20 @@ app.use(expressSession({
   store: store
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'client', 'public')));
+app.use(express.static(path.join(__dirname, "client", "public")));
 
 var stream = null;
 
 //Serviço principal da aplicação
-app.get('/', function (req, res) {
+app.get("/", function (req, res) {
 
   if(stream != null)
     stream.stop();
-  res.render('index', {title: 'BRAND SENTIMENT'});
+  res.render("index", {title: "BRAND SENTIMENT"});
 });
 
 //Serviço responsável pela análise de sentimento  e geração do Dashboard
-app.post('/search', function (req, res) {
+app.post("/search", function (req, res) {
 
   console.log(req.body);
 
@@ -53,33 +49,33 @@ app.post('/search', function (req, res) {
 
 
   //Inicialização do Socket
-  io.sockets.on('connection', function (socket) {
+  io.sockets.on("connection", function (socket) {
 
-    console.log('SOcket Conectado!');
+    console.log("SOcket Conectado!");
     var session = socket.handshake.session;
 
     //Informações para o dashboard
     session.pos = 0;
     session.neg = 0;
     session.ntr = 0;
-    session.posSentence = '';
+    session.posSentence = "";
     session.posScore = 0;
-    session.negSentence = '';
+    session.negSentence = "";
     session.negScore = 0;
 
 
     //Criando Stream de conexão com o Twitter
-    stream = twitterClient.stream('statuses/filter', {
+    stream = twitterClient.stream("statuses/filter", {
       track: query,
-      lang: 'pt',
+      lang: "pt",
       retweeted: false
     });
 
-    stream.on('tweet', function (tweet) {
+    stream.on("tweet", function (tweet) {
 
       //Apenas tweets da língua portuguesa
-      if(tweet.lang == 'pt'){
-        console.log('tweet', tweet.text);
+      if(tweet.lang == "pt"){
+        console.log("tweet", tweet.text);
 
         //Classificando
         var obj = analysisSentiment.sentimet(tweet.text);
@@ -89,8 +85,8 @@ app.post('/search', function (req, res) {
         **/
 
         //Dados referente a classe positiva
-        console.log('RESULTADO: ', obj);
-        if (obj.result == 'positive'){
+        console.log("RESULTADO: ", obj);
+        if (obj.result == "positive"){
           if(parseFloat(obj.score) > session.posScore){
             session.posScore = parseFloat(obj.score);
             session.posSentence = tweet.text;
@@ -99,7 +95,7 @@ app.post('/search', function (req, res) {
         }
 
         //Dados referente a classe negativa
-        else if (obj.result == 'negative'){
+        else if (obj.result == "negative"){
           if(parseFloat(obj.score) > session.negScore){
             session.negScore = parseFloat(obj.score);
             session.negSentence = tweet.text;
@@ -111,14 +107,14 @@ app.post('/search', function (req, res) {
           session.ntr++;
 
         //Atualizando dados
-        io.sockets.emit('stream', {posScore:session.posScore, posSentence:session.posSentence, negScore:session.negScore, negSentence:session.negSentence, pos:session.pos, neg:session.neg, ntr:session.ntr});
+        io.sockets.emit("stream", {posScore:session.posScore, posSentence:session.posSentence, negScore:session.negScore, negSentence:session.negSentence, pos:session.pos, neg:session.neg, ntr:session.ntr});
 
       }
 
     });
   });
 
-  res.render('twitter', {title: query});
+  res.render("twitter", {title: query});
 });
 
 
@@ -132,7 +128,7 @@ io.use(function(socket, next) {
     var sessionID = data.signedCookies[process.env.SESSION_KEY];
     store.get(sessionID, function(err, session) {
       if (err || !session) {
-        return next(new Error('Acesso negado!'));
+        return next(new Error("Acesso negado!"));
       } else {
         socket.handshake.session = session;
         return next();

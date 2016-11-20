@@ -1,7 +1,3 @@
-/**
- * Created by rodrigo on 11/08/15.
- */
-
 var natural = require("natural");
 
 //Create Tokenize
