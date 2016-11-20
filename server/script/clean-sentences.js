@@ -17,15 +17,10 @@ negatives.map(function(sentence){
 
 
 function removeLinks (array) {
-
-
     var arrayWithoutLinks = array.map(function (item) {
       if(!_.include(item, "http")){
         return item.trim();
       }
     });
-
     return arrayWithoutLinks;
-
-
 }

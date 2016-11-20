@@ -4,7 +4,7 @@ var tokens                = require("./../ngram/tokenSentences");
 var natural               = require("natural");
 var keywordExtractor      = require("keyword-extractor");
 
-
+// Define opções para extração de palavras-chaves
 var extractorOptions = {
   language:"portuguese",
   remove_digits: true,
@@ -15,25 +15,25 @@ var extractorOptions = {
 var arrayNeg = [];
 var arrayPos = [];
 
-//Create classifierBayes
+// Cria classificador Naive Bayes
 var classifierBayes = new natural.BayesClassifier();
 
-//Read Files Neagtive and Positive
+// Lê frases positivas e negativas da base de conhecimento
 var negatives = fs.readFileSync("sentences/negatives-sentences.txt", "utf8").split("\n");
 var positives = fs.readFileSync("sentences/positives-sentences.txt", "utf8").split("\n");
 var neutras = fs.readFileSync("sentences/neutros-sentences.txt", "utf8").split("\n");
 
 var sentence = null;
 
-//Push negatives cases in classifierBayes
+// Adiciona frases negativas no classificador
 for(var i = 0; i < negatives.length; i++){
 
-  //Stopwords
+  // Remove stopwords
   sentence = cleanSentence(negatives[i].toLowerCase());
   sentence = removeLinksAndUsername(sentence);
   sentence = keywordExtractor.extract(sentence, extractorOptions);
 
-  //Ngram (Trigram or Bigram?)
+  // Inicia Ngram
   var trigramsNegative = [sentence.join(" ")];
   if(sentence.length > 2)
     trigramsNegative = tokens.textToTrigram(sentence.join(" "));
@@ -48,13 +48,11 @@ for(var i = 0; i < negatives.length; i++){
 }
 console.log("Frases Negativas carregadas!");
 
-//Push positves cases in Classifier
+// Adiciona frases positivas no classificador
 for(i = 0; i < positives.length; i++){
 
   sentence = cleanSentence(positives[i].toLowerCase());
-
   sentence = removeLinksAndUsername(sentence);
-
   sentence = keywordExtractor.extract(sentence, extractorOptions);
 
   var trigramsPositive = [sentence.join(" ")];
@@ -73,7 +71,7 @@ for(i = 0; i < positives.length; i++){
 
 console.log("Frases Positivas carregadas!");
 
-//Push positves cases in Classifier
+// Adiciona frases neutras no classificador
 for(i = 0; i < neutras.length; i++){
 
   sentence = cleanSentence(neutras[i].toLowerCase());
@@ -100,7 +98,7 @@ for(i = 0; i < neutras.length; i++){
 }
 console.log("Frases Neutras carregadas!");
 
-//Train
+// Treina classificador
 classifierBayes.train();
 
 console.log("Classificador Treinado!");

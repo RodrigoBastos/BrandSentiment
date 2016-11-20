@@ -1,19 +1,19 @@
 var natural = require("natural");
 
-//Create Tokenize
+// Cria tokenizador
 var tokenizer = new natural.WordTokenizer();
 tokenizer._pattern =  /\s+/;
 
-//Create Ngram Object
+// Cria objeto Ngram
 var NGrams = natural.NGrams;
 NGrams.setTokenizer(tokenizer);
 
-//Change Text to Array Trigram
+// Transforma texto em Trigram
 exports.textToTrigram = function(text){
   return NGrams.trigrams(text);
 };
 
-//Change Text to Array Trigram
+// Transforma texto para Bigram
 exports.textToBigram = function(text){
   return NGrams.bigrams(text);
 };

@@ -5,10 +5,10 @@
 var fs = require("fs");
 var twitterClient = require("../config/index.js").twitterClient;
 
-//Adicionar palavras/expressões com contexto positivo ou negativo
+// palavras/expressões com contexto positivo ou negativo
 var keywords = [];
 
-//Stream Twitter by Filter
+// Cria Stream Twitter por filtro
 var stream = twitterClient.stream("statuses/filter", { track: keywords });
 
 var count = 0;
@@ -20,10 +20,8 @@ function onTwitter (tweet) {
   console.log(tweet.text);
   var size = tweet.text.split(" ").length;
 
-
   tweets.push(tweet.text);
   count++;
-
 
   if (count == 100) {
     stream.stop();

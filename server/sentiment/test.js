@@ -1,7 +1,6 @@
 var fs                    = require("fs");
 var analysisSentiment     = require("./sentiment.js");
 
-
 var negativeSentences = [
   "Eu te odeio",
   "Estou com muita raiva hoje",
@@ -24,8 +23,6 @@ var positiveSentences = [
   "Obrigado por tudo!",
   "não estou triste"
 ];
-
-
 
 negativeSentences.map(function(sentence){
   var result = analysisSentiment.sentimet(sentence);

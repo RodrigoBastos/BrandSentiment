@@ -4,7 +4,7 @@ var tokens                = require("../server/ngram/tokenSentences");
 var natural               = require("natural");
 var keywordExtractor      = require("keyword-extractor");
 
-//Cria classificador Naive Bayes
+// Cria classificador Naive Bayes
 var classifierBayes = new natural.BayesClassifier();
 
 var extractorOptions = {
@@ -14,7 +14,7 @@ var extractorOptions = {
   remove_duplicates: false
 };
 
-//Remove Links e Usernames do texto de entrada
+// Remove Links e Usernames do texto de entrada
 function removeLinksAndUsername (sentence) {
   var words = sentence.split(" ");
   var result = words.map(function(word){
@@ -26,7 +26,7 @@ function removeLinksAndUsername (sentence) {
   return result.join(" ");
 }
 
-//Limpando texto de entrada
+// Limpa texto de entrada
 function cleanSentence (sentence){
 
   return sentence.replace(/(\?)+/, "?")
@@ -37,7 +37,7 @@ function cleanSentence (sentence){
     ;
 }
 
-//Preparando dados de treino e teste
+// Prepara dados de treino e teste
 function preClassify (sentences){
 
   var test = [];
@@ -61,7 +61,7 @@ function generateDocument (sentences, label) {
 
   for(var i = 0; i < sentences.length; i++){
 
-    //Stopwords
+    // Remove Stopwords
     var sentence = cleanSentence(sentences[i].toLowerCase());
     sentence = removeLinksAndUsername(sentence);
     sentence = keywordExtractor.extract(sentence, extractorOptions);
@@ -97,15 +97,15 @@ var negatives = preClassify(sentencesNegatives);
 var positives = preClassify(sentencesPositives);
 var neutras = preClassify(sentencesNeutras);
 
-//Gerando os documentos de treino
+// Gera os documentos de treino
 generateDocument(negatives.train, "negative");
 generateDocument(positives.train, "positive");
 generateDocument(neutras.train, "neutra");
 
-//Treinando Classificador
+// Treina o classificador
 classifierBayes.train();
 
-//Classificação por NGRAM
+// Classifica frase via NGRAM
 var getSentimentNgram = function (sentence) {
   sentence = cleanSentence(sentence.toLowerCase());
   sentence = removeLinksAndUsername(sentence);
@@ -144,7 +144,7 @@ var getSentimentNgram = function (sentence) {
 
 };
 
-//Classificação da frase de entrada
+// Classifica frase de entrada
 var getSentiment = function (sentence) {
 
   sentence = cleanSentence(sentence.toLowerCase());
@@ -192,10 +192,10 @@ var getSentiment = function (sentence) {
 };
 
 
-/*
-* Testando classificador
+/**
+ * Testa o classificador
+ *
  */
-
 var countNeg = 0;
 var countPos = 0;
 var countNtr = 0;

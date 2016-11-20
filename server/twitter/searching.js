@@ -1,10 +1,10 @@
 var fs  = require("fs");
 var twitterClient = require("../config/index.js").twitterClient;
 
-
+// Palavras-chaves
 var keywords = ["Google", "Apple", "Microsoft"];
 
-//Stream Twitter by Search
+// Cria Stream do Twitter por pesquisar
 for(var i=0; i < keywords.length; i++){
   twitterClient.get("search/tweets", { q: keywords[i], lang: "pt", retweet: false }, getSentences);
 }
@@ -12,7 +12,6 @@ for(var i=0; i < keywords.length; i++){
 function getSentences (error, tweets, response) {
 
   var obj = tweets.statuses;
-
   var sentences = [];
 
   for (var i = 0; i < obj.length; i++){
@@ -22,7 +21,6 @@ function getSentences (error, tweets, response) {
   }
 
   var phrases = "\n"+ sentences.join("\n");
-
   fs.appendFile("sentences.txt", phrases, function(err) {
     if (err) throw err;
   });
