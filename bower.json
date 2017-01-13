@@ -1,6 +1,7 @@
 {
-  "name": "BrandSentiment",
+  "name": "brand-sentiment",
   "version": "0.0.1",
+  "directory": "source/components/",
   "homepage": "https://github.com/RodrigoBastos/BrandSentiment",
   "authors": [
     "Rodrigo Bastos <rodrigorozendobastos@gmail.com>"
