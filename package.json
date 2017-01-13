@@ -24,6 +24,8 @@
     "twit": "^2.2.2"
   },
   "devDependencies": {
+    "eslint": "^3.13.1",
+    "eslint-config-airbnb-base": "^7.1.0",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.1.0",
     "gulp-include": "~2.0.3",
