@@ -122,7 +122,6 @@ app.post('/search', function (req, res) {
       }
     });
   });
-
   // Retorna página com o resultado da consulta
   res.render('twitter', { title: query });
 });
