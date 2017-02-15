@@ -1,21 +1,20 @@
-var natural = require("natural");
+/* eslint no-underscore-dangle: ["error", { "allow": ["_pattern"] }]*/
+var natural = require('natural');
 
 // Cria tokenizador
 var tokenizer = new natural.WordTokenizer();
-tokenizer._pattern =  /\s+/;
+tokenizer._pattern = /\s+/;
 
 // Cria objeto Ngram
 var NGrams = natural.NGrams;
 NGrams.setTokenizer(tokenizer);
 
 // Transforma texto em Trigram
-exports.textToTrigram = function(text){
+exports.textToTrigram = function (text) {
   return NGrams.trigrams(text);
 };
 
 // Transforma texto para Bigram
-exports.textToBigram = function(text){
+exports.textToBigram = function (text) {
   return NGrams.bigrams(text);
 };
-
-
