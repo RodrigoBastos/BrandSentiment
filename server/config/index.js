@@ -1,5 +1,5 @@
-var Twit = require("twit");
-var oauth = require("../twitter/twitter_credentials.js");
+var Twit = require('twit');
+var oauth = require('../twitter/twitter_credentials.js');
 
 // Configurações
 module.exports = {
