@@ -89,7 +89,7 @@ app.post('/search', function (req, res) {
         console.log('tweet', tweet.text);
 
         // Classifica
-        var obj = analysisSentiment.sentimet(tweet.text);
+        var obj = analysisSentiment.sentiment(tweet.text);
 
         // Dados referente a classe positiva
         console.log('RESULTADO: ', obj);
